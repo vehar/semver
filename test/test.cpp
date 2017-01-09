@@ -6,7 +6,7 @@
 #include "semver.hpp"
 
 int main() {
-    char buffer[22];
+    char buffer[Semver::bufferSize];
     // Test 1
     std::printf("Format version object to string\n");
     Version version1(2, 0, 0, Version::Pre::Alpha);
@@ -24,6 +24,9 @@ int main() {
     printf("Raw version string: %s\n",versionStr);
     printf("Parsed version: %s (for example: minor = %d)\n",
         Semver::toString(version2, buffer), version2.minor);
+
+    version2 = Semver::fromString("65535.65535.65535-alpha.65535");
+    printf("Parsed maximum version: %s\n", Semver::toString(version2, buffer));
 
     printf("\n\n");
 
