@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <cstring>
+#include <cstdio>
 
 #pragma pack(push,1)
 struct Version {
@@ -43,13 +44,12 @@ struct Version {
 
 class Semver {
 public:
-    Semver() = delete;
-
-    static char*        toString    (const Version& ver, char* buffer);
-    static Version      fromString  (const char* versionStr);
-
     static const size_t bufferSize = 30;    // major.minor.patch-preVersion.version\0
                                             //   5  1  5  1  5  1   5      1   5    1  -> 29 + 1
+    Semver() = delete;
+
+    static char*        toString    (const Version& ver, char* const buffer, const size_t bufferLength = bufferSize);
+    static Version      fromString  (const char* versionStr);
 private:
     static const size_t preReleaseBufferLength  = 13;   // -preVersion.version\0
                                                         // 1     5    1   5    1  -> 12 + 1
@@ -133,11 +133,11 @@ bool Version::isOlderThen(const Version& ver) const {
 
 // ----------------------------------------------------------------------------
 
-char* Semver::toString(const Version& version, char* buffer) {
-    memset(buffer, 0, Semver::bufferSize);
+char* Semver::toString(const Version& version, char* const buffer, const size_t bufferLength) {
+    memset(buffer, 0, bufferLength);
 
     const char* preReleaseBuffer = Semver::getPreStr(version.preRelease, version.preReleaseVersion);
-    std::sprintf(buffer, "%u.%u.%u%s", version.major, version.minor, version.patch, preReleaseBuffer);
+    std::snprintf(buffer, bufferLength, "%u.%u.%u%s", version.major, version.minor, version.patch, preReleaseBuffer);
 
     return buffer;
 }
