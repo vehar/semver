@@ -9,9 +9,10 @@
 struct Version {
     enum class Pre {
         None                = 0,
-        Alpha               = 1,
-        Betha               = 2,
-        ReleaseCandidate    = 3,
+        Development         = 1,
+        Alpha               = 2,
+        Betha               = 3,
+        ReleaseCandidate    = 4,
     };
 
     Version(const uint16_t major = 0, 
@@ -181,16 +182,19 @@ char* Semver::getPreStr(const Version::Pre rel, const uint16_t version) {
     }    
 
     switch(rel) {
-        case Version::Pre::None:
+    case Version::Pre::None:
         buffer[0] = '\0';
         break;
-        case Version::Pre::Alpha:
+    case Version::Pre::Development:
+        std::sprintf(buffer, "-dev%s\0", versionBuffer);
+        break;
+    case Version::Pre::Alpha:
         std::sprintf(buffer, "-alpha%s\0", versionBuffer);
         break;
-        case Version::Pre::Betha:
+    case Version::Pre::Betha:
         std::sprintf(buffer, "-betha%s\0", versionBuffer);
         break;
-        case Version::Pre::ReleaseCandidate:
+    case Version::Pre::ReleaseCandidate:
         std::sprintf(buffer, "-rc%s\0", versionBuffer);
         break;
     }
@@ -198,12 +202,15 @@ char* Semver::getPreStr(const Version::Pre rel, const uint16_t version) {
 }
 
 Version::Pre Semver::getPreVal(const char* str) {
-    if(std::strcmp(str,"alpha") == 0) {
+    constexpr size_t preVersionStringLength = 5;
+    if(std::strncmp(str, "alpha", preVersionStringLength) == 0) {
         return Version::Pre::Alpha;
-    } else if(std::strcmp(str,"betha") == 0) {
+    } else if(std::strncmp(str, "betha", preVersionStringLength) == 0) {
         return Version::Pre::Betha;
-    } else if(std::strcmp(str,"rc") == 0) {
+    } else if(std::strncmp(str, "rc", preVersionStringLength) == 0) {
         return Version::Pre::ReleaseCandidate;
+    } else if(std::strncmp(str, "dev", preVersionStringLength) == 0) {
+        return Version::Pre::Development;
     }
     return Version::Pre::None;
 }

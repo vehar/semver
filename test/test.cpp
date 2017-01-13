@@ -19,7 +19,7 @@ int main() {
     std::printf("Parse version string to object\n");
     Version version2;
     printf("Version before parsing: %s\n", Semver::toString(version2, buffer));
-    const char* versionStr = "2.12.10-betha.3";
+    const char* versionStr = "2.12.10-dev.3";
     version2 = Semver::fromString(versionStr);
     printf("Raw version string: %s\n",versionStr);
     printf("Parsed version: %s (for example: minor = %d)\n",
